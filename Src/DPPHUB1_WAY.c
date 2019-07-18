@@ -9,45 +9,37 @@
 
 DPP_Frame_to_sensor DPP_frame;
 DPP_Frame_Classical DPP_classic;
+uint8_t DPP_to_other[4] = {0};
 
 void start_dpp_receiving(UART_HandleTypeDef *huart)
 {
-	HAL_UART_Receive_DMA(huart, (uint8_t*)&cmd, sizeof(cmd));
-//	HAL_UART_Receive_IT(huart, (uint8_t*)&cmd, sizeof(cmd));
+	HAL_GPIO_WritePin(USART1_DE_GPIO_Port, USART1_DE_Pin, DISABLE);
+	HAL_UART_Receive_DMA(huart, (uint8_t*)&DPP_frame, sizeof(DPP_frame));
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-	extern DPP_frame DPP_frame;
-	uint8_t DPP_to_other[4] = {0};
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+	uint8_t cs = 0;
+	for (int i = 0; i < sizeof(DPP_frame) - 1; i++)
+		cs += *(uint8_t*) (&DPP_frame.syncro + i);
 
-	DPP_classic.DPP = DppStruct.DPP;
+	if (cs == DPP_frame.cs)
+	{
+
+		DPP_classic.DPP = DPP_frame.DPP;
 		DPP_classic.cs = 0;
-		for (int i=0; i<sizeof(DPP_classic)-1; i++) DPP_classic.cs += *(uint8_t*)(&DPP_classic.syncro+i);
+		for (int i = 0; i < sizeof(DPP_classic) - 1; i++)
+			DPP_classic.cs += *(uint8_t*) (&DPP_classic.syncro + i);
 
-		DPP_frame.DPP = DppStruct.DPP;
-		DPP_frame.timer = DppStruct.NowTime;
-		DPP_frame.MinAccXaxis = AverageAcc.MinAcc;
-		DPP_frame.MaxAccXaxis = AverageAcc.MaxAcc;
-		DPP_frame.AvrAccXaxis = AverageAcc.AvrAcc;
-		DPP_frame.AvrAccYaxis = Bumps.AvrAccYaxis;
-		DPP_frame.AvrAccZaxis = Bumps.AvrAccZaxis;
-		DPP_frame.speed = AverageAcc.WagonSpeed;
-		DPP_frame.MinBump = Bumps.MinBump;
-		DPP_frame.MaxBump = Bumps.MaxBump;
-		DPP_frame.cs = 0;
-		for (int i=0; i<sizeof(DPP_frame)-1; i++) DPP_frame.cs += *(uint8_t*)(&DPP_frame.syncro+i);
-
-		DPP_to_other[0] = (uint8_t)DppStruct.DPP & 63;
-		DPP_to_other[1] = ((uint8_t)(DppStruct.DPP >> 6) & 127) | 64;
-		DPP_to_other[2] = ((uint8_t)(DppStruct.DPP >> 12) & 191) | 128;
-		DPP_to_other[3] = (uint8_t)(DppStruct.DPP >> 18) | 192;
+		DPP_to_other[0] = (uint8_t) DPP_frame.DPP & 63;
+		DPP_to_other[1] = ((uint8_t) (DPP_frame.DPP >> 6) & 127) | 64;
+		DPP_to_other[2] = ((uint8_t) (DPP_frame.DPP >> 12) & 191) | 128;
+		DPP_to_other[3] = (uint8_t) (DPP_frame.DPP >> 18) | 192;
 
 		CDC_Transmit_FS((uint8_t*) &DPP_frame, sizeof(DPP_frame));
 
-
 		HAL_UART_Transmit_DMA(&huart3, (uint8_t*) &DPP_classic, sizeof(DPP_classic));
-		HAL_UART_Transmit_DMA(&huart6, (uint8_t*) &DPP_to_other, sizeof(DPP_to_other));
+		HAL_UART_Transmit_IT(&huart6, (uint8_t*) &DPP_to_other, sizeof(DPP_to_other));
+	}
 }
 
 
@@ -76,4 +68,6 @@ void DPP_struct_init(void)
 	DPP_classic.size = 0x04;
 	DPP_classic.DPP = 0;
 	DPP_classic.cs = 0;
+
+	cmd_ini();
 }
