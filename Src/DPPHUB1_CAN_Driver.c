@@ -8,7 +8,7 @@
 
 uint32_t LED_Turn_Count=0;
 int Sent_USB = 0;
-extern DPP_Frame_to_sensor DPP_frame_to_sensor;
+extern DPP_Frame_to_sensor DPP_frame;
 extern DPP_Frame_Classical DPP_classic;
 
 void HAL_CAN_RxFifo0FullCallback(CAN_HandleTypeDef *hcan)
@@ -48,25 +48,25 @@ void HAL_CAN_RxFifo0FullCallback(CAN_HandleTypeDef *hcan)
 	DPP_classic.cs = 0;
 	for (int i=0; i<sizeof(DPP_classic)-1; i++) DPP_classic.cs += *(uint8_t*)(&DPP_classic.syncro+i);
 
-	DPP_frame_to_sensor.DPP = DppStruct.DPP;
-	DPP_frame_to_sensor.timer = DppStruct.NowTime;
-	DPP_frame_to_sensor.MinAccXaxis = AverageAcc.MinAcc;
-	DPP_frame_to_sensor.MaxAccXaxis = AverageAcc.MaxAcc;
-	DPP_frame_to_sensor.AvrAccXaxis = AverageAcc.AvrAcc;
-	DPP_frame_to_sensor.AvrAccYaxis = Bumps.AvrAccYaxis;
-	DPP_frame_to_sensor.AvrAccZaxis = Bumps.AvrAccZaxis;
-	DPP_frame_to_sensor.speed = AverageAcc.WagonSpeed;
-	DPP_frame_to_sensor.MinBump = Bumps.MinBump;
-	DPP_frame_to_sensor.MaxBump = Bumps.MaxBump;
-	DPP_frame_to_sensor.cs = 0;
-	for (int i=0; i<sizeof(DPP_frame_to_sensor)-1; i++) DPP_frame_to_sensor.cs += *(uint8_t*)(&DPP_frame_to_sensor.syncro+i);
+	DPP_frame.DPP = DppStruct.DPP;
+	DPP_frame.timer = DppStruct.NowTime;
+	DPP_frame.MinAccXaxis = AverageAcc.MinAcc;
+	DPP_frame.MaxAccXaxis = AverageAcc.MaxAcc;
+	DPP_frame.AvrAccXaxis = AverageAcc.AvrAcc;
+	DPP_frame.AvrAccYaxis = Bumps.AvrAccYaxis;
+	DPP_frame.AvrAccZaxis = Bumps.AvrAccZaxis;
+	DPP_frame.speed = AverageAcc.WagonSpeed;
+	DPP_frame.MinBump = Bumps.MinBump;
+	DPP_frame.MaxBump = Bumps.MaxBump;
+	DPP_frame.cs = 0;
+	for (int i=0; i<sizeof(DPP_frame)-1; i++) DPP_frame.cs += *(uint8_t*)(&DPP_frame.syncro+i);
 
 	DPP_to_other[0] = (uint8_t)DppStruct.DPP & 63;
 	DPP_to_other[1] = ((uint8_t)(DppStruct.DPP >> 6) & 127) | 64;
 	DPP_to_other[2] = ((uint8_t)(DppStruct.DPP >> 12) & 191) | 128;
 	DPP_to_other[3] = (uint8_t)(DppStruct.DPP >> 18) | 192;
 
-	usbresult = CDC_Transmit_FS((uint8_t*) &DPP_frame_to_sensor, sizeof(DPP_frame_to_sensor));
+	usbresult = CDC_Transmit_FS((uint8_t*) &DPP_frame, sizeof(DPP_frame));
 		if (!usbresult) HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_11); // green
 
 	HAL_UART_Transmit_DMA(&huart3, (uint8_t*) &DPP_classic, sizeof(DPP_classic));

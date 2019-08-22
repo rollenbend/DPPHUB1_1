@@ -54,6 +54,7 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 #include "DPPHUB1_CAN_Driver.h"
 #include "DPPHUB1_WAY.h"
+#include "commands.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -79,6 +80,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define USART1_DE_Pin GPIO_PIN_7
+#define USART1_DE_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

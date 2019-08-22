@@ -4,6 +4,7 @@
  *  Created on: 23 февр. 2019 г.
  *      Author: yaonn
  */
+#ifdef RA_DRIVER
 
 #include "RA_driver.h"
 extern UART_HandleTypeDef huart1;
@@ -68,3 +69,6 @@ void start_ra_receiving(UART_HandleTypeDef *huart)
 {
 	HAL_UART_Receive_DMA(huart, ramessage, sizeof(ramessage));
 }
+
+#endif
+
