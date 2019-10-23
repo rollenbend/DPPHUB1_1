@@ -54,7 +54,7 @@ FATFS SDFatFS;    /* File system object for SD logical drive */
 FIL SDFile;       /* File object for SD */
 
 /* USER CODE BEGIN Variables */
-
+#include <DPPHUB_USB_Driver.h>
 /* USER CODE END Variables */    
 
 void MX_FATFS_Init(void) 
@@ -75,8 +75,7 @@ void MX_FATFS_Init(void)
 DWORD get_fattime(void)
 {
   /* USER CODE BEGIN get_fattime */
-	return ((DWORD)(2019 - 1980) << 25 | (DWORD)7 << 21 | (DWORD)11 << 16);
-  return 0;
+	return RTC_make_fattime();
   /* USER CODE END get_fattime */  
 }
 

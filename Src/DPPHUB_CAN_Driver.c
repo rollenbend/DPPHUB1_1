@@ -4,10 +4,13 @@
  *  Created on: 18 дек. 2018 г.
  *      Author: ilya
  */
-#include "DPPHUB1_CAN_Driver.h"
-
+#include <DPPHUB_CAN_Driver.h>
+#ifdef CAN_DRIVER_ENABLE
 uint32_t LED_Turn_Count=0;
 int Sent_USB = 0;
+extern CAN_HandleTypeDef hcan1;
+extern UART_HandleTypeDef huart3;
+extern UART_HandleTypeDef huart6;
 extern DPP_Frame_to_sensor DPP_frame;
 extern DPP_Frame_Classical DPP_classic;
 
@@ -172,7 +175,4 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 
 
-
-
-
-
+#endif

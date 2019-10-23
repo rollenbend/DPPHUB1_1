@@ -5,13 +5,11 @@
  *      Author: user
  */
 
-#ifndef DPPHUB1_CAN_DRIVER_H_
-#define DPPHUB1_CAN_DRIVER_H_
+#ifndef DPPHUB_CAN_DRIVER_H_
+#define DPPHUB_CAN_DRIVER_H_
 
 #include "main.h"
-extern CAN_HandleTypeDef hcan1;
-extern UART_HandleTypeDef huart3;
-extern UART_HandleTypeDef huart6;
+
 
 typedef struct {
 		uint32_t DPP;      // DPP counter
@@ -46,4 +44,4 @@ typedef struct {
 void DPPHUB_CAN_Init(void);
 
 
-#endif /* DPPHUB1_CAN_DRIVER_H_ */
+#endif /* DPPHUB_CAN_DRIVER_H_ */

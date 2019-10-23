@@ -52,19 +52,35 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "DPPHUB1_CAN_Driver.h"
-#include "DPPHUB1_WAY.h"
-#include "commands.h"
+#include <string.h>
+#include <stdio.h>
+#include <DPPHUB_CAN_Driver.h>
+#include <DPPHUB_USART_Driver.h>
+#include <DPPHUB_USB_Driver.h>
+#include <DPPHUB_SD_Card_Driver.h>
+#include <DPPHUB_RA_handler.h>
+#include <DPPHUB_HSOW_handler.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+#define USART_WAY_IN_ENABLE
+#define SD_CARD_ENABLE
+#define RADIOAVEONIKA_DRV_ENABLE
+//#define CAN_DRIVER_ENABLE
 
+#define RA_huart			Get_huart1_addr()		// for receive dpp packeges from Radioaveonika
+#define HSOW_huart			Get_huart2_addr() 		// for receive dpp packeges from HSOW sensor
+#define Classic_huart		Get_huart3_addr()		// for 7-byte dpp packeges
+#define Other_huart			Get_huart6_addr()		// for 4-byte dpp packeges
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+UART_HandleTypeDef* Get_huart1_addr(void);
+UART_HandleTypeDef* Get_huart2_addr(void);
+UART_HandleTypeDef* Get_huart3_addr(void);
+UART_HandleTypeDef* Get_huart6_addr(void);
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -80,8 +96,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define USART1_DE_Pin GPIO_PIN_7
-#define USART1_DE_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
