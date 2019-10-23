@@ -124,7 +124,6 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	if (huart == HSOW_huart)
 	{
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_6, DISABLE);
-//		Need_to_transmit_cmd = RESET;
 	}
 }
 
